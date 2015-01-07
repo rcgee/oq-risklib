@@ -468,7 +468,7 @@ def get_risk_model(oqparam):
         extras['tses'] = (oqparam.ses_per_logic_tree_path *
                           oqparam.investigation_time)
 
-    if oqparam.calculation_mode.endswith('_damage'):
+    if 'damage' in oqparam.calculation_mode:
         # scenario damage calculator
         fragility_functions = get_fragility_functions(
             oqparam.inputs['fragility'],
@@ -724,3 +724,23 @@ def get_sitecol_gmfs(oqparam):
             csvfile, imts, num_values, valid.positivefloats)
     sitecol = get_site_collection(oqparam, mesh)
     return sitecol, gmfs_by_imt
+
+
+def get_sitecol_gmvs(oqparam):
+    """
+    Read sites and ground motion values from a file with header
+    `point_1, ..., point_N`
+    """
+    lons, lats = [], []
+    with open(oqparam.inputs['gmvs']) as csvfile:
+        gmfreader = csv.reader(csvfile)
+        locations = gmfreader.next()
+        gmv_matrix = numpy.array([map(float, row) for row in gmfreader]).T
+    for loc in locations:
+        lon, lat = loc.split()
+        lons.append(float(lon))
+        lats.append(float(lat))
+    mesh = geo.Mesh(numpy.array(lons), numpy.array(lats))
+    sitecol = get_site_collection(oqparam, mesh)
+    [imt] = oqparam.imtls  # for the moment we support only one IMT
+    return sitecol, {imt: gmv_matrix}

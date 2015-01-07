@@ -731,7 +731,7 @@ class Scenario(Workflow):
                 insured_loss_matrix, insured_losses)
 
 
-@registry.add('scenario_damage')
+@registry.add('scenario_damage', 'scenario_damage_from_gmfs')
 class Damage(Workflow):
     """
     Implements the ScenarioDamage workflow

@@ -11,7 +11,8 @@ class ScenarioDamageTestCase(CalculatorTestCase):
 
     @attr('qa', 'risk', 'scenario_damage')
     def test_case_1(self):
-        raise unittest.SkipTest(case_1)
+        out = self.run_calc(case_1.__file__, 'job_risk.ini')
+        self.check_expected(out)
 
     @attr('qa', 'risk', 'scenario_damage')
     def test_case_2(self):
@@ -24,6 +25,9 @@ class ScenarioDamageTestCase(CalculatorTestCase):
     @attr('qa', 'risk', 'scenario_damage')
     def test_case_4(self):
         out = self.run_calc(case_4.__file__, 'job_haz.ini,job_risk.ini')
+        self.check_expected(out)
+
+    def check_expected(self, out):
         self.assertEqualFiles(
             'expected/dmg_dist_per_asset.xml', out['dmg_dist_per_asset_xml'])
         self.assertEqualFiles(
