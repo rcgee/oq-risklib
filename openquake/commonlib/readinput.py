@@ -186,14 +186,14 @@ def get_mesh(oqparam):
         an :class:`openquake.commonlib.oqvalidation.OqParam` instance
     """
     if oqparam.sites:
-        lons, lats = zip(*sorted(oqparam.sites))
-        return geo.Mesh(numpy.array(lons), numpy.array(lats))
+        lons, lats, depths = zip(*sorted(oqparam.sites))
+        return geo.Mesh(numpy.array(lons), numpy.array(lats), numpy.array(depths))           
     elif 'sites' in oqparam.inputs:
         csv_data = open(oqparam.inputs['sites'], 'U').read()
         coords = valid.coordinates(
             csv_data.strip().replace(',', ' ').replace('\n', ','))
-        lons, lats = zip(*sorted(coords))
-        return geo.Mesh(numpy.array(lons), numpy.array(lats))
+        lons, lats, depths = zip(*sorted(coords))
+        return geo.Mesh(numpy.array(lons), numpy.array(lats), numpy.array(depths))           
     elif oqparam.region:
         # close the linear polygon ring by appending the first
         # point to the end
@@ -286,7 +286,7 @@ def get_site_collection(oqparam, mesh=None, site_ids=None,
 
     # else use the default site params
     return site.SiteCollection.from_points(
-        mesh.lons, mesh.lats, site_ids, oqparam)
+        mesh.lons, mesh.lats, mesh.depths, site_ids, oqparam)
 
 
 def get_gsims(oqparam):

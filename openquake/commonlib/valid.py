@@ -313,21 +313,32 @@ def depth(value):
     :returns: float >= 0
     """
     dep = float_(value)
-    if dep < 0:
-        raise ValueError('depth %s < 0' % dep)
+    #if dep < 0:
+    #    raise ValueError('depth %s < 0' % dep)
     return dep
 
 
 def lon_lat(value):
     """
     :param value: a pair of coordinates
-    :returns: a tuple (longitude, latitude)
+    :returns: a tuple (longitude, latitude) or ((longitude, latitude, depth)
 
     >>> lon_lat('12 14')
     (12.0, 14.0)
+    >>> lon_lat('12 14 16')
+    (12.0, 14.0, 16.0)
     """
-    lon, lat = value.split()
-    return longitude(lon), latitude(lat)
+    if len(value.split()) == 2:                                    
+        lon, lat = value.split()
+        return longitude(lon), latitude(lat), depth(0)
+    elif len(value.split()) == 3:
+        lon, lat, dep= value.split()
+        return longitude(lon), latitude(lat), depth(dep)
+    else:
+        raise ValueError('each site must have either 2 or 3 coordinates')
+    
+    #lon, lat, dep = value.split()
+    #return longitude(lon), latitude(lat), depth(dep)
 
 
 def lon_lat_iml(value, lon, lat, iml):
@@ -346,8 +357,8 @@ def coordinates(value):
     ValueError: Empty list of coordinates: ''
     >>> coordinates('1.1 1.2')
     [(1.1, 1.2)]
-    >>> coordinates('1.1 1.2, 2.2 2.3')
-    [(1.1, 1.2), (2.2, 2.3)]
+    >>> coordinates('1.1 1.2, 2.2 2.3, 3.3 3.4')
+    [(1.1, 1.2), (2.2, 2.3), (3.3, 3.4)]
     """
     if not value.strip():
         raise ValueError('Empty list of coordinates: %r' % value)
