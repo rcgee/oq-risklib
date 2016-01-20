@@ -187,13 +187,15 @@ def get_mesh(oqparam):
     """
     if oqparam.sites:
         lons, lats, depths = zip(*sorted(oqparam.sites))
-        return geo.Mesh(numpy.array(lons), numpy.array(lats), numpy.array(depths))           
+        return geo.Mesh(numpy.array(lons), numpy.array(lats),
+                        numpy.array(depths))
     elif 'sites' in oqparam.inputs:
         csv_data = open(oqparam.inputs['sites'], 'U').read()
         coords = valid.coordinates(
             csv_data.strip().replace(',', ' ').replace('\n', ','))
         lons, lats, depths = zip(*sorted(coords))
-        return geo.Mesh(numpy.array(lons), numpy.array(lats), numpy.array(depths))           
+        return geo.Mesh(numpy.array(lons), numpy.array(lats),
+                        numpy.array(depths))
     elif oqparam.region:
         # close the linear polygon ring by appending the first
         # point to the end
